@@ -6,60 +6,94 @@ use GNAT;
 use Ada;
 
 package body Aoc.Day_1 is
-   function Safe_Wrap (Val : Integer) return Safe_State is
-      MOD_VAL : constant Integer := Safe_State'Pos (Safe_State'Last) + 1;
-   begin
-      return Safe_State'Val (Val mod MOD_VAL);
-   end Safe_Wrap;
+   Split_Delim : constant String := "" & Characters.Latin_1.LF;
 
-   function Safe_Turn (Safe : Safe_State; Dir : Rot_Dir; Turn : Positive)
-     return Safe_State
-   is
+   function Parse_Turn (S : String) return Safe_Turn is
+      Dir_Char : constant Character := S (S'First);
+      Len : constant Positive := Positive'Value (
+        S (S'First + 1 .. S'Last));
+      Direction : constant Rot_Dir := Rot_Dir'Enum_Val (
+        Character'Pos (Dir_Char));
    begin
-      case Dir is
+      return (Dir => Direction, Len => Len);
+   end Parse_Turn;
+
+   procedure Turn_Safe
+     (Safe : in out Safe_Recorder;
+      Turn : Safe_Turn)
+   is
+      MOD_VAL : constant Positive := Positive'Val (
+        Safe_State'Pos (Safe_State'Last) + 1);
+   begin
+      case Turn.Dir is
          when RIGHT =>
-            return Safe_Wrap (Safe_State'Pos (Safe) + Turn);
+            declare
+               Sum : constant Positive := Positive'Val (
+                 Safe_State'Pos (Safe.State) + Positive'Pos (Turn.Len));
+            begin
+               Safe.Click := Safe.Click + Sum / MOD_VAL;
+               Safe.State := Safe_State'Val (Sum mod MOD_VAL);
+            end;
          when LEFT =>
-            if Safe < Safe_Wrap (Turn) then
-               return Safe_State'Last - (Safe_Wrap (Turn) - Safe) + 1;
-            else
-               return Safe - Safe_Wrap (Turn);
-            end if;
+            declare
+               Diff : constant Integer := Safe_State'Pos (
+                 Safe.State) - Positive'Pos (Turn.Len);
+            begin
+               if Diff > 0 then
+                  Safe.State := Safe_State'Val (Diff);
+               else
+                  Safe.Click := Safe.Click + Positive'Val (
+                    (-Diff) / MOD_VAL) + Boolean'Pos (Safe.State > 0);
+                  Safe.State := Safe_State'Val (Safe_State'Pos (
+                    Safe_State'Last) - ((-Diff - 1) mod MOD_VAL));
+               end if;
+            end;
       end case;
-   end Safe_Turn;
+   end Turn_Safe;
 
    procedure Part_One (Input : String) is
       Lines : String_Split.Slice_Set;
-      Delim : constant String := "" & Characters.Latin_1.LF;
-      Safe : Safe_State := 50;
+      Recorder : Safe_Recorder := (State => 50, Click => 0);
       Password : Natural := 0;
    begin
       String_Split.Create (
         S => Lines, From => Input,
-        Separators => Delim,
+        Separators => Split_Delim,
         Mode => String_Split.Multiple);
 
       for I in 1 .. String_Split.Slice_Count (Lines) loop
          declare
             Slice : constant String := String_Split.Slice (Lines, I);
-            Direction : constant Character := Slice (Slice'First);
-            Stride : constant Positive := Positive'Value (
-              Slice (Slice'First + 1 .. Slice'Last));
+            Turn : constant Safe_Turn := Parse_Turn (Slice);
          begin
-            Safe := Safe_Turn (Safe, Rot_Dir'Enum_Val (
-              Character'Pos (Direction)), Stride);
-
-            if Safe = 0 then
+            Turn_Safe (Recorder, Turn);
+            if Recorder.State = 0 then
                Password := Password + 1;
             end if;
          end;
       end loop;
 
-      Text_IO.Put_Line (Password'Image);
+      Text_IO.Put_Line ("Password: " & Password'Image);
    end Part_One;
 
    procedure Part_Two (Input : String) is
+      Lines : String_Split.Slice_Set;
+      Recorder : Safe_Recorder := (State => 50, Click => 0);
    begin
-      null;
+      String_Split.Create (
+        S => Lines, From => Input,
+        Separators => Split_Delim,
+        Mode => String_Split.Multiple);
+
+      for I in 1 .. String_Split.Slice_Count (Lines) loop
+         declare
+            Slice : constant String := String_Split.Slice (Lines, I);
+            Turn : constant Safe_Turn := Parse_Turn (Slice);
+         begin
+            Turn_Safe (Recorder, Turn);
+         end;
+      end loop;
+
+      Text_IO.Put_Line ("Password: " & Recorder.Click'Image);
    end Part_Two;
 end Aoc.Day_1;
