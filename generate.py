@@ -16,27 +16,26 @@ for source in pathlib.Path(sources).glob("aoc-day_*.adb"):
     if day_id >= 1 and day_id <= 12:
         implemented_days.add(day_id)
 
-part_one_cases = ""
-part_two_cases = ""
-day_imports = ""
+part_one_cases = []
+part_two_cases = []
+day_imports = []
 
 for day_id in implemented_days:
     indent_1 = ' ' * 9
     indent_2 = ' ' * 12
 
     day_pkg = f"Aoc.Day_" + str(day_id)
-    day_imports += f"with {day_pkg};"
+    day_imports.append(f"with {day_pkg};")
 
-    case_guard = indent_1 + "when " + str(day_id) + " =>\n"
-    part_one_cases += case_guard
-    part_two_cases += case_guard
+    case_guard = indent_1 + "when " + str(day_id) + " =>"
+    part_one_cases.append(case_guard)
+    part_two_cases.append(case_guard)
 
-    part_one_cases += f"{indent_2}{day_pkg}.Part_One (Input);\n"
-    part_two_cases += f"{indent_2}{day_pkg}.Part_Two (Input);\n"
+    part_one_cases.append(f"{indent_2}{day_pkg}.Part_One (Input);")
+    part_two_cases.append(f"{indent_2}{day_pkg}.Part_Two (Input);")
 
-generated_code = f"""
-with Ada.Text_IO; use Ada.Text_IO;
-{day_imports}
+generated_code = f"""with Ada.Text_IO; use Ada.Text_IO;
+{"\n".join(day_imports)}
 
 package body Aoc.Generated is
    function Get_Input_Dir return String is
@@ -47,7 +46,7 @@ package body Aoc.Generated is
    procedure Run_Day_Part_One (Id : Day_Id; Input : String) is
    begin
       case Id is
-{part_one_cases}
+{"\n".join(part_one_cases)}
          when others =>
             Put_Line (Standard_Error, "Unimplemented day " & Id'Image);
             raise Program_Error;
@@ -57,7 +56,7 @@ package body Aoc.Generated is
    procedure Run_Day_Part_Two (Id : Day_Id; Input : String) is
    begin
       case Id is
-{part_two_cases}
+{"\n".join(part_two_cases)}
          when others =>
             Put_Line (Standard_Error, "Unimplemented day " & Id'Image);
             raise Program_Error;
