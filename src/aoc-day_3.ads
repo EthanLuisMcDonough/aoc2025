@@ -1,10 +1,15 @@
+with Interfaces;
+
 package Aoc.Day_3 is
-   type Joltage is range 11 .. 99;
-   type Dec_Digit is range 1 .. 9;
+   function Max_Joltage
+     (Line : String;
+      Digit_Count : Positive)
+      return Interfaces.Unsigned_64;
 
-   function Char_To_Digit (C : Character) return Dec_Digit;
-
-   function Max_Joltage (Line : String) return Joltage;
+   function Sum_Joltage
+     (Input : String;
+      Digit_Count : Positive)
+      return Interfaces.Unsigned_64;
 
    procedure Part_One (Input : String);
    procedure Part_Two (Input : String);
