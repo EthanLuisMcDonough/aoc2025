@@ -15,4 +15,22 @@ package body Aoc.Common is
    begin
       return (First => First_Id, Second => Second_Id);
    end Parse_Pair;
+
+   function Pair_Membership
+     (Id : Interfaces.Unsigned_64;
+      Pair : Id_Pair) return Boolean
+   is
+   begin
+      return Id >= Pair.First and then Id <= Pair.Second;
+   end Pair_Membership;
+
+   function Pair_Overlap (A : Id_Pair; B : Id_Pair)
+     return Boolean
+   is
+   begin
+      return Pair_Membership (A.First, B) or else
+        Pair_Membership (B.First, A) or else
+        Pair_Membership (A.Second, B) or else
+        Pair_Membership (B.Second, A);
+   end Pair_Overlap;
 end Aoc.Common;

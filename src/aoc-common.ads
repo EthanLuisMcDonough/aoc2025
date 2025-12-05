@@ -7,4 +7,9 @@ package Aoc.Common is
    end record;
 
    function Parse_Pair (S : String) return Id_Pair;
+   function Pair_Membership
+     (Id : Interfaces.Unsigned_64;
+      Pair : Id_Pair) return Boolean;
+   function Pair_Overlap (A : Id_Pair; B : Id_Pair)
+     return Boolean;
 end Aoc.Common;
