@@ -2,23 +2,15 @@ with Interfaces;
 with Ada.Strings.Fixed;
 with Ada.Text_IO;
 with GNAT.String_Split;
+with Aoc.Common;
 
 use Ada;
 use Ada.Strings;
 use Interfaces;
 use GNAT;
+use Aoc.Common;
 
 package body Aoc.Day_2 is
-   function Parse_Pair (S : String) return Id_Pair is
-      Split_Ind : constant Natural := Fixed.Index (S, "-");
-      Str_One   : constant String := S (S'First .. Split_Ind - 1);
-      Str_Two   : constant String := S (Split_Ind + 1 .. S'Last);
-      First_Id  : constant Unsigned_64 := Unsigned_64'Value (Str_One);
-      Second_Id : constant Unsigned_64 := Unsigned_64'Value (Str_Two);
-   begin
-      return (First => First_Id, Second => Second_Id);
-   end Parse_Pair;
-
    function Check_Repeat (Id : Unsigned_64) return Boolean is
       Str  : constant String := Fixed.Trim (Unsigned_64'Image (Id), Both);
       Half : constant Integer := Str'Length / 2;
@@ -93,7 +85,7 @@ package body Aoc.Day_2 is
    procedure Part_One (Input : String) is
       function Sum_Logic is new Sum_Errs (
         Check_Err => Check_Repeat);
-      Err_Sum : Unsigned_64 := Sum_Logic (Input);
+      Err_Sum : constant Unsigned_64 := Sum_Logic (Input);
    begin
       Text_IO.Put_Line ("Error sum: " & Err_Sum'Image);
    end Part_One;
@@ -101,7 +93,7 @@ package body Aoc.Day_2 is
    procedure Part_Two (Input : String) is
       function Sum_Logic is new Sum_Errs (
         Check_Err => Check_Repeat_Exhaustive);
-      Err_Sum : Unsigned_64 := Sum_Logic (Input);
+      Err_Sum : constant Unsigned_64 := Sum_Logic (Input);
    begin
       Text_IO.Put_Line ("Error sum: " & Err_Sum'Image);
    end Part_Two;
