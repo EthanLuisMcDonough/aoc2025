@@ -3,6 +3,7 @@ with GNAT.String_Split;
 with Interfaces;
 with Ada.Text_IO;
 with Ada.Characters.Latin_1;
+with Aoc.Common;
 
 use GNAT;
 use Ada;
@@ -56,14 +57,10 @@ package body Aoc.Day_3 is
    function Sum_Joltage (Input : String; Digit_Count : Positive)
      return Unsigned_64
    is
-      S : String_Split.Slice_Set;
+      S : constant String_Split.Slice_Set :=
+        Common.Split_Lines (Input);
       Sum : Unsigned_64 := 0;
    begin
-      String_Split.Create (S,
-        Input,
-        "" & Characters.Latin_1.LF,
-        String_Split.Multiple);
-
       for I in 1 .. String_Split.Slice_Count (S) loop
          Sum := Sum + Max_Joltage (
            String_Split.Slice (S, I), Digit_Count);

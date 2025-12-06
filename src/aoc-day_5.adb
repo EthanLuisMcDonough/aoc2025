@@ -1,9 +1,9 @@
 with GNAT.String_Split;
 with Ada.Text_IO;
 with Ada.Strings.Fixed;
-with Ada.Characters.Latin_1;
 with Ada.Containers.Hashed_Sets;
 with Ada.Containers;
+with Aoc.Common;
 
 use Ada;
 use Ada.Strings;
@@ -25,8 +25,7 @@ package body Aoc.Day_5 is
 
    function Parse_Input (Input : String) return Database is
       use GNAT.String_Split;
-      Lines : constant Slice_Set := Create (Input,
-        Characters.Latin_1.LF & "", Multiple);
+      Lines : constant Slice_Set := Common.Split_Lines (Input);
       Dates       : Dates_Vec.Vector;
       Ingredients : Uint64_Vec.Vector;
    begin

@@ -1,13 +1,11 @@
-with Ada.Characters.Latin_1;
 with Ada.Text_IO;
 with GNAT.String_Split;
+with Aoc.Common;
 
 use GNAT;
 use Ada;
 
 package body Aoc.Day_1 is
-   Split_Delim : constant String := "" & Characters.Latin_1.LF;
-
    function Parse_Turn (S : String) return Safe_Turn is
       Dir_Char : constant Character := S (S'First);
       Len : constant Positive := Positive'Value (
@@ -52,15 +50,11 @@ package body Aoc.Day_1 is
    end Turn_Safe;
 
    procedure Part_One (Input : String) is
-      Lines : String_Split.Slice_Set;
+      Lines : constant String_Split.Slice_Set :=
+        Common.Split_Lines (Input);
       Recorder : Safe_Recorder := (State => 50, Click => 0);
       Password : Natural := 0;
    begin
-      String_Split.Create (
-        S => Lines, From => Input,
-        Separators => Split_Delim,
-        Mode => String_Split.Multiple);
-
       for I in 1 .. String_Split.Slice_Count (Lines) loop
          declare
             Slice : constant String := String_Split.Slice (Lines, I);
@@ -77,14 +71,10 @@ package body Aoc.Day_1 is
    end Part_One;
 
    procedure Part_Two (Input : String) is
-      Lines : String_Split.Slice_Set;
+      Lines : constant String_Split.Slice_Set :=
+        Common.Split_Lines (Input);
       Recorder : Safe_Recorder := (State => 50, Click => 0);
    begin
-      String_Split.Create (
-        S => Lines, From => Input,
-        Separators => Split_Delim,
-        Mode => String_Split.Multiple);
-
       for I in 1 .. String_Split.Slice_Count (Lines) loop
          declare
             Slice : constant String := String_Split.Slice (Lines, I);

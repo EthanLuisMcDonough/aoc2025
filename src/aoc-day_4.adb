@@ -2,6 +2,7 @@ with Ada.Text_IO;
 with Ada.Containers.Vectors;
 with Ada.Characters.Latin_1;
 with GNAT.String_Split;
+with Aoc.Common;
 
 use Ada;
 use GNAT;
@@ -33,9 +34,7 @@ package body Aoc.Day_4 is
 
    function Read_Rack (Input : String) return Roll_Rack is
       Lines : constant String_Split.Slice_Set :=
-        String_Split.Create (
-          From => Input, Mode => String_Split.Multiple,
-          Separators => Characters.Latin_1.LF & "");
+        Common.Split_Lines (Input);
    begin
       declare
          Rows : constant Positive := Positive'Val (
