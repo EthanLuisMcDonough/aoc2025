@@ -1,3 +1,5 @@
+with Interfaces;
+
 package Aoc.Day_6 is
    type Operator is (Plus, Mult);
 
@@ -10,6 +12,9 @@ package Aoc.Day_6 is
       Nums : Grid (1 .. Rows, 1 .. Cols);
       Ops : Operators (1 .. Cols);
    end record;
+
+   function Sum_Homework (Worksheet : Homework)
+     return Interfaces.Unsigned_64;
 
    function Parse_Homework (Input : String) return Homework;
 

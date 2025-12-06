@@ -1,4 +1,5 @@
 with Interfaces;
+with GNAT.String_Split;
 
 package Aoc.Common is
    type Id_Pair is record
@@ -12,4 +13,9 @@ package Aoc.Common is
       Pair : Id_Pair) return Boolean;
    function Pair_Overlap (A : Id_Pair; B : Id_Pair)
      return Boolean;
+
+   function Split_Lines (Input : String)
+     return GNAT.String_Split.Slice_Set;
+   function Split_Space_Trim (S : String)
+     return GNAT.String_Split.Slice_Set;
 end Aoc.Common;

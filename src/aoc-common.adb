@@ -1,7 +1,10 @@
+with GNAT;
 with Interfaces;
 with Ada.Strings.Fixed;
+with Ada.Characters.Latin_1;
 
 use Ada;
+use GNAT;
 use Interfaces;
 use Ada.Strings;
 
@@ -33,4 +36,23 @@ package body Aoc.Common is
         Pair_Membership (A.Second, B) or else
         Pair_Membership (B.Second, A);
    end Pair_Overlap;
+
+   function Split_Lines (Input : String)
+     return String_Split.Slice_Set
+   is
+   begin
+      return String_Split.Create (Input,
+        Characters.Latin_1.LF & "",
+        String_Split.Multiple);
+   end Split_Lines;
+
+   function Split_Space_Trim (S : String)
+     return String_Split.Slice_Set
+   is
+      Trimmed : constant String := Fixed.Trim (S, Both);
+      Set : constant String_Split.Slice_Set :=
+        String_Split.Create (Trimmed, " ", String_Split.Multiple);
+   begin
+      return Set;
+   end Split_Space_Trim;
 end Aoc.Common;

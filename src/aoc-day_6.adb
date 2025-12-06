@@ -1,36 +1,29 @@
 with Interfaces;
+with Aoc.Common;
 with Ada.Text_IO;
-with Ada.Characters.Latin_1;
-with Ada.Strings.Fixed;
 with GNAT.String_Split;
 
 use Ada;
+use GNAT;
 use Interfaces;
-use Ada.Strings;
 
 package body Aoc.Day_6 is
    function Parse_Homework (Input : String) return Homework is
       use GNAT.String_Split;
-      use Ada.Characters;
 
-      function Split_Space_Trim (S : String) return Slice_Set is
-         Trimmed : constant String := Fixed.Trim (S, Both);
-         Set : constant Slice_Set := Create (Trimmed, " ", Multiple);
-      begin
-         return Set;
-      end Split_Space_Trim;
-
-      Lines : constant Slice_Set := Create (
-        Input, Latin_1.LF & "", Multiple);
+      Lines : constant Slice_Set :=
+        Common.Split_Lines (Input);
       Rows : constant Positive := Positive'Val (
         Slice_Count (Lines) - 1);
 
       First_Line : constant String := Slice (Lines, 1);
-      First_Split : constant Slice_Set := Split_Space_Trim (First_Line);
+      First_Split : constant Slice_Set :=
+        Common.Split_Space_Trim (First_Line);
 
       Last_Line : constant String := Slice (
         Lines, Slice_Count (Lines));
-      Last_Split : constant Slice_Set := Split_Space_Trim (Last_Line);
+      Last_Split : constant Slice_Set :=
+        Common.Split_Space_Trim (Last_Line);
 
       Cols : constant Positive := Positive'Val (
         Slice_Count (First_Split));
@@ -50,7 +43,7 @@ package body Aoc.Day_6 is
       for I in 2 .. Slice_Count (Lines) - 1 loop
          declare
             Line : constant String := Slice (Lines, I);
-            Slice : constant Slice_Set := Split_Space_Trim (Line);
+            Slice : constant Slice_Set := Common.Split_Space_Trim (Line);
          begin
             Process_Row (Slice, Positive'Val (I));
          end;
@@ -77,8 +70,9 @@ package body Aoc.Day_6 is
         Nums => Numbers, Ops => Ops);
    end Parse_Homework;
 
-   procedure Part_One (Input : String) is
-      Worksheet : constant Homework := Parse_Homework (Input);
+   function Sum_Homework (Worksheet : Homework)
+     return Unsigned_64
+   is
       Sum : Unsigned_64 := 0;
    begin
       for I in 1 .. Worksheet.Cols loop
@@ -88,8 +82,8 @@ package body Aoc.Day_6 is
          begin
             for J in 1 .. Worksheet.Rows loop
                declare
-                  Num : constant Unsigned_64 := Unsigned_64'Val (
-                    Worksheet.Nums (J, I));
+                  Num : constant Unsigned_64 :=
+                    Unsigned_64'Val (Worksheet.Nums (J, I));
                begin
                   case Op is
                      when Plus =>
@@ -102,11 +96,70 @@ package body Aoc.Day_6 is
             Sum := Sum + Local;
          end;
       end loop;
+      return Sum;
+   end Sum_Homework;
+
+   procedure Part_One (Input : String) is
+      Worksheet : constant Homework := Parse_Homework (Input);
+      Sum : constant Unsigned_64 := Sum_Homework (Worksheet);
+   begin
       Text_IO.Put_Line ("Sum: " & Sum'Image);
    end Part_One;
 
    procedure Part_Two (Input : String) is
+      use GNAT.String_Split;
+      Sum : Unsigned_64 := 0;
+      Lines : constant Slice_Set := Common.Split_Lines (Input);
+      Last_Line : constant String := Slice (Lines, Slice_Count (Lines));
+      Ops : constant Slice_Set := Create (Last_Line, " ",
+        String_Split.Multiple);
    begin
-      null;
+      for Op_Ind in 1 .. Slice_Count (Ops) loop
+         declare
+            Op_Str : constant String := Slice (Ops, Op_Ind);
+            Op : constant Operator := (if Op_Str = "+" then Plus else Mult);
+            Local_Val : Unsigned_64 := (if Op = Plus then 0 else 1);
+            Upper_Ind : Natural := Last_Line'Last;
+         begin
+            exit when Op_Str = "";
+            if Op_Ind < Slice_Count (Ops) then
+               Upper_Ind := Slice (Ops, Op_Ind + 1)'First - 1;
+            end if;
+
+            for J in Op_Str'First .. Upper_Ind loop
+               declare
+                  Power : Unsigned_64 := 1;
+                  Num : Unsigned_64 := 0;
+               begin
+                  for K in reverse 1 .. Slice_Count (Lines) - 1 loop
+                     declare
+                        Line : constant String := Slice (Lines, K);
+                        Digit : constant Character := Line (
+                          J - Last_Line'First + Line'First);
+                     begin
+                        if Digit /= ' ' then
+                           Num := Num + Unsigned_64'Val (
+                             Character'Pos (Digit) -
+                             Character'Pos ('0')) * Power;
+                           Power := Power * 10;
+                        end if;
+                     end;
+                  end loop;
+
+                  exit when Num = 0;
+
+                  case Op is
+                     when Plus =>
+                        Local_Val := Local_Val + Num;
+                     when Mult =>
+                        Local_Val := Local_Val * Num;
+                  end case;
+               end;
+            end loop;
+            Sum := Sum + Local_Val;
+         end;
+      end loop;
+
+      Text_IO.Put_Line ("Sum: " & Sum'Image);
    end Part_Two;
 end Aoc.Day_6;
