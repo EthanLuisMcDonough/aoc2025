@@ -5,6 +5,7 @@ with Ada.Characters;
 with Ada.Characters.Latin_1;
 with Ada.Strings.Fixed;
 with Ada.Strings.Unbounded;
+with Ada.Real_Time;
 
 use Ada;
 use Ada.Strings;
@@ -12,11 +13,19 @@ use Ada.Strings;
 package body Aoc is
    DIR_ENV_VAR : constant String := "AOC_2025_INPUT_DIR";
 
-   procedure Unimplemented is
+   procedure Run_Timed is
+      use Ada.Real_Time;
+      Start_Time : constant Time := Clock;
    begin
-      Text_IO.Put_Line (Text_IO.Standard_Error, "Unimplemented day/part");
-      raise Program_Error;
-   end Unimplemented;
+      Run_Task;
+      declare
+         End_Time : constant Time := Clock;
+         Diff : constant Duration := To_Duration (End_Time - Start_Time);
+      begin
+         Text_IO.Put_Line ("Finished " & Name & " in " &
+           Duration'Image (Diff) & " seconds");
+      end;
+   end Run_Timed;
 
    procedure Handle_Day (Id : Day_Id; P : Day_Part) is
       Input_Dir : constant String := Environment_Variables.Value (
@@ -39,15 +48,31 @@ package body Aoc is
 
       declare
          Input : constant String := Unbounded.To_String (Input_Buf);
+
+         procedure Part_One is
+         begin
+            Aoc.Generated.Run_Day_Part_One (Id, Input);
+         end Part_One;
+
+         procedure Part_Two is
+         begin
+            Aoc.Generated.Run_Day_Part_Two (Id, Input);
+         end Part_Two;
+
+         procedure Timed_P1 is new Run_Timed
+           (Run_Task => Part_One, Name => "Part 1");
+         procedure Timed_P2 is new Run_Timed
+           (Run_Task => Part_Two, Name => "Part 2");
       begin
          case P is
             when BOTH_PARTS =>
-               Aoc.Generated.Run_Day_Part_One (Id, Input);
-               Aoc.Generated.Run_Day_Part_Two (Id, Input);
+               Timed_P1;
+               Text_IO.New_Line;
+               Timed_P2;
             when FIRST_PART =>
-               Aoc.Generated.Run_Day_Part_One (Id, Input);
+               Timed_P1;
             when SECOND_PART =>
-               Aoc.Generated.Run_Day_Part_Two (Id, Input);
+               Timed_P2;
          end case;
       end;
    end Handle_Day;
