@@ -55,4 +55,18 @@ package body Aoc.Common is
    begin
       return Set;
    end Split_Space_Trim;
+
+   function Uint64_Hash (H : Unsigned_64)
+     return Ada.Containers.Hash_Type
+   is
+      MOD_MAX : constant Unsigned_64 := Unsigned_64'Val (
+        Ada.Containers.Hash_Type'Last) + 1;
+   begin
+      return Ada.Containers.Hash_Type'Val (H mod MOD_MAX);
+   end Uint64_Hash;
+
+   function Int_Hash (H : Integer) return Ada.Containers.Hash_Type is
+   begin
+      return Ada.Containers.Hash_Type'Val (H);
+   end Int_Hash;
 end Aoc.Common;

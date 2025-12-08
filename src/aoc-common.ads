@@ -1,5 +1,6 @@
 with Interfaces;
 with GNAT.String_Split;
+with Ada.Containers;
 
 package Aoc.Common is
    type Id_Pair is record
@@ -18,4 +19,9 @@ package Aoc.Common is
      return GNAT.String_Split.Slice_Set;
    function Split_Space_Trim (S : String)
      return GNAT.String_Split.Slice_Set;
+
+   function Uint64_Hash (H : Interfaces.Unsigned_64)
+     return Ada.Containers.Hash_Type;
+   function Int_Hash (H : Integer)
+     return Ada.Containers.Hash_Type;
 end Aoc.Common;
