@@ -1,6 +1,5 @@
 with Ada.Text_IO;
 with Ada.Containers.Vectors;
-with Ada.Characters.Latin_1;
 with GNAT.String_Split;
 with Aoc.Common;
 

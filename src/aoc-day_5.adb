@@ -3,7 +3,6 @@ with Ada.Text_IO;
 with Ada.Strings.Fixed;
 with Ada.Containers.Hashed_Sets;
 with Ada.Containers;
-with Aoc.Common;
 
 use Ada;
 use Ada.Strings;

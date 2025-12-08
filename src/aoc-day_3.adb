@@ -2,7 +2,6 @@ with GNAT;
 with GNAT.String_Split;
 with Interfaces;
 with Ada.Text_IO;
-with Ada.Characters.Latin_1;
 with Aoc.Common;
 
 use GNAT;

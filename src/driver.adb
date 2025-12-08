@@ -9,7 +9,7 @@ procedure Driver is
    begin
       Put_Line ("Usage: aoc2025 <day> <part>");
       Put_Line (PADDING & "<day>   Day to run, must be a number between " &
-                "1 and 31");
+                "1 and 12");
       Put_Line (PADDING & "<part>  Part to run, must be 1 or 2. This " &
                 "argument is optional.");
    end Print_Help;
