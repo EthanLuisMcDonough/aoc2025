@@ -8,7 +8,9 @@ package Aoc.Common is
       Second : Interfaces.Unsigned_64;
    end record;
 
-   function Parse_Pair (S : String) return Id_Pair;
+   function Parse_Pair
+     (S : String; Delim : Character := '-')
+      return Id_Pair;
    function Pair_Membership
      (Id : Interfaces.Unsigned_64;
       Pair : Id_Pair) return Boolean;
