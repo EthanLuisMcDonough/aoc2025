@@ -6,8 +6,13 @@ use Interfaces;
 use Aoc.Common;
 
 package Aoc.Day_5 is
+   package Ingredient_Range is new Common.Numeric_Pair
+     (Num => Unsigned_64);
+
    package Dates_Vec is new Ada.Containers.Vectors
-     (Index_Type => Natural, Element_Type => Id_Pair);
+     (Index_Type => Natural,
+      Element_Type => Ingredient_Range.Pair,
+      "=" => Ingredient_Range."=");
    package Uint64_Vec is new Ada.Containers.Vectors
      (Index_Type => Natural, Element_Type => Unsigned_64);
 

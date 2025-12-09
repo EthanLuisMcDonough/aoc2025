@@ -1,12 +1,24 @@
 with Interfaces;
 with Ada.Text_IO;
 with GNAT.String_Split;
-with Interfaces;
 
 use Ada;
 use Interfaces;
 
 package body Aoc.Day_9 is
+   function Corner_Area (A : Coord.Pair; B : Coord.Pair)
+     return Interfaces.Unsigned_64
+   is
+      A_X : constant Integer_64 := Integer_64 (A.First);
+      B_X : constant Integer_64 := Integer_64 (B.First);
+      A_Y : constant Integer_64 := Integer_64 (A.Second);
+      B_Y : constant Integer_64 := Integer_64 (B.Second);
+      Diff_X : constant Unsigned_64 := Unsigned_64 (abs (A_X - B_X) + 1);
+      Diff_Y : constant Unsigned_64 := Unsigned_64 (abs (A_Y - B_Y) + 1);
+   begin
+      return Diff_X * Diff_Y;
+   end Corner_Area;
+
    function Parse_Inputs (Input : String) return Coords is
       use GNAT.String_Split;
       Lines : constant Slice_Set := Common.Split_Lines (Input);
@@ -18,7 +30,7 @@ package body Aoc.Day_9 is
          declare
             Line : constant String := Slice (Lines, I);
          begin
-            C (Positive'Val (I)) := Common.Parse_Pair (Line, ',');
+            C (Positive'Val (I)) := Coord.Parse (Line);
          end;
       end loop;
       return C;
@@ -30,16 +42,7 @@ package body Aoc.Day_9 is
    begin
       for I in C'First .. C'Last - 1 loop
          for J in I + 1 .. C'Last loop
-            declare
-               Diff_X : constant Integer_64 := abs (
-                 Integer_64 (C (I).First) - Integer_64 (C (J).First)) + 1;
-               Diff_Y : constant Integer_64 := abs (
-                 Integer_64 (C (I).Second) - Integer_64 (C (J).Second)) + 1;
-               Area : constant Unsigned_64 :=
-                 Unsigned_64 (Diff_X) * Unsigned_64 (Diff_Y); 
-            begin
-               Max_Area := Unsigned_64'Max (Max_Area, Area);
-            end;
+            Max_Area := Unsigned_64'Max (Corner_Area (C (I), C (J)), Max_Area);
          end loop;
       end loop;
       Text_IO.Put_Line ("Max area: " & Max_Area'Image);

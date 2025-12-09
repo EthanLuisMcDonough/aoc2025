@@ -11,6 +11,8 @@ use GNAT;
 use Aoc.Common;
 
 package body Aoc.Day_2 is
+   package Id_Pair is new Common.Numeric_Pair (Num => Unsigned_64);
+
    function Check_Repeat (Id : Unsigned_64) return Boolean is
       Str  : constant String := Fixed.Trim (Unsigned_64'Image (Id), Both);
       Half : constant Integer := Str'Length / 2;
@@ -59,6 +61,7 @@ package body Aoc.Day_2 is
    end Check_Repeat_Exhaustive;
 
    function Sum_Errs (Input : String) return Unsigned_64 is
+      use Id_Pair;
       Pair_Strs : String_Split.Slice_Set;
       Err_Sum   : Unsigned_64 := 0;
    begin
@@ -68,10 +71,10 @@ package body Aoc.Day_2 is
 
       for I in 1 .. String_Split.Slice_Count (Pair_Strs) loop
          declare
-            Pair : constant Id_Pair := Parse_Pair (
+            P : constant Pair := Parse (
               String_Split.Slice (Pair_Strs, I));
          begin
-            for I in Pair.First .. Pair.Second loop
+            for I in P.First .. P.Second loop
                if Check_Err (I) then
                   Err_Sum := Err_Sum + I;
                end if;
