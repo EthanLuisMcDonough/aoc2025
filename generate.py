@@ -34,8 +34,15 @@ for day_id in implemented_days:
     part_one_cases.append(f"{indent_2}{day_pkg}.Part_One (Input);")
     part_two_cases.append(f"{indent_2}{day_pkg}.Part_Two (Input);")
 
-generated_code = f"""with Ada.Text_IO; use Ada.Text_IO;
-{"\n".join(day_imports)}
+if len(implemented_days) < 12:
+   others_case = """         when others =>
+            Put_Line (Standard_Error, "Unimplemented day " & Id'Image);
+            raise Program_Error;"""
+   part_one_cases.append(others_case)
+   part_two_cases.append(others_case)
+   day_imports.append("with Ada.Text_IO; use Ada.Text_IO;")
+
+generated_code = f"""{"\n".join(day_imports)}
 
 package body Aoc.Generated is
    function Get_Input_Dir return String is
@@ -47,9 +54,6 @@ package body Aoc.Generated is
    begin
       case Id is
 {"\n".join(part_one_cases)}
-         when others =>
-            Put_Line (Standard_Error, "Unimplemented day " & Id'Image);
-            raise Program_Error;
       end case;
    end Run_Day_Part_One;
 
@@ -57,9 +61,6 @@ package body Aoc.Generated is
    begin
       case Id is
 {"\n".join(part_two_cases)}
-         when others =>
-            Put_Line (Standard_Error, "Unimplemented day " & Id'Image);
-            raise Program_Error;
       end case;
    end Run_Day_Part_Two;
 end Aoc.Generated;
