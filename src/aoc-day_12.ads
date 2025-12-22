@@ -85,9 +85,7 @@ package Aoc.Day_12 is
    function Can_Apply
      (A : Attempt; Reqs : Box_Requirements;
       Region : Gift_Region) return Boolean;
-   --  function Any_Adjacent
-   --    (A : Attempt; Reqs : Box_Requirements;
-   --     Region : Gift_Region) return Boolean;
+
    procedure Apply
      (A : Attempt;
       Reqs : Box_Requirements;

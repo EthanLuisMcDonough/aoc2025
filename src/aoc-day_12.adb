@@ -409,7 +409,8 @@ package body Aoc.Day_12 is
    end Part_One;
 
    procedure Part_Two (Input : String) is
+      pragma Unreferenced (Input);
    begin
-      null;
+      Text_IO.Put_Line ("Happy holidays! The tree is decorated");
    end Part_Two;
 end Aoc.Day_12;
